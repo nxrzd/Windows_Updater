@@ -6,10 +6,10 @@ param([switch]$Launched)
 # =============================
 if (-not $Launched) {
     Start-Process powershell -ArgumentList @(
-        "-NoLogo","-NoProfile",
-        "-ExecutionPolicy","Bypass",
+        "-NoLogo", "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
         "-NoExit",
-        "-File",$PSCommandPath,
+        "-File", $PSCommandPath,
         "-Launched"
     ) -WindowStyle Normal
     return
@@ -22,7 +22,8 @@ try {
     $Host.UI.RawUI.BackgroundColor = "Black"
     $Host.UI.RawUI.ForegroundColor = "Green"
     Clear-Host
-} catch {}
+}
+catch {}
 
 # =============================
 # STATIC START SCREEN
@@ -35,10 +36,14 @@ function Show-Banner {
 \   \/\/   /  |/    \|     ___/\__  \\   __\/ ___\|  |  \_/ __ \_  __ \
  \        /|  |   |  \    |     / __ \|  | \  \___|   Y  \  ___/|  | \/
   \__/\  / |__|___|  /____|    (____  /__|  \___  >___|  /\___  >__|   
-       \/          \/               \/          \/     \/     \/       '@
+       \/          \/               \/          \/     \/     \/       
+'@
     Write-Host ""
     Write-Host "============================================================"
     Write-Host "          WINGET AUTO UPGRADE + NETWORK LOGGER"
+    Write-Host "          Author: Noah Richardson"
+    Write-Host "          GitHub: github.com/nxrzd/WinPatcher"
+    Write-Host "          Copyright (c) 2026 GPL-3.0 License"
     Write-Host "============================================================"
     Write-Host ""
     Write-Host "  Press ENTER to initiate system sequence..."
@@ -58,7 +63,7 @@ Clear-Host
 # MAIN PROGRAM VARIABLES
 # =============================
 $ScriptRoot = Split-Path -Parent $PSCommandPath
-$TimeStamp  = Get-Date -Format "yyyyMMdd_HHmmss"
+$TimeStamp = Get-Date -Format "yyyyMMdd_HHmmss"
 
 $Log = Join-Path $ScriptRoot ("Winget-Log_{0}_{1}.txt" -f $TimeStamp, $PID)
 $NetFolder = Join-Path $ScriptRoot "NetworkLogs"
@@ -125,7 +130,8 @@ if ($uptimeHours -gt 12) {
         Write-Host "[INFO] Restarting system..."
         Restart-Computer
         return
-    } else {
+    }
+    else {
         Write-Host "[INFO] Proceeding without restart..."
         Write-Host ""
     }
@@ -138,7 +144,8 @@ function Test-AppInstaller {
     try {
         Get-AppxPackage -Name "Microsoft.DesktopAppInstaller" -ErrorAction Stop | Out-Null
         return $true
-    } catch {
+    }
+    catch {
         return $false
     }
 }
@@ -149,7 +156,8 @@ if (-not (Test-AppInstaller) -and $WindowsVersion -eq "10") {
         # Try installing via winget
         winget install --id Microsoft.DesktopAppInstaller -e --silent
         Write-Host "[OK] App Installer installed."
-    } catch {
+    }
+    catch {
         Write-Host "[ERROR] Could not install App Installer automatically. Please install from the Microsoft Store:"
         Write-Host "       https://www.microsoft.com/store/productId/9NBLGGH4NNS1"
         Stop-Transcript | Out-Null
@@ -167,20 +175,24 @@ if (-not $TerminalInstalled) {
         Write-Host "[INFO] Installing Windows Terminal for Windows 10..."
         try {
             winget install --id Microsoft.WindowsTerminal -e --silent
-        } catch {
+        }
+        catch {
             Write-Host "[WARNING] Automatic installation failed. Please install manually from the Microsoft Store:"
             Write-Host "       https://www.microsoft.com/store/productId/9N0DX20HK701"
         }
-    } else {
+    }
+    else {
         Write-Host "[INFO] Windows Terminal not detected. Attempting installation for Windows 11..."
         try {
             winget install --id Microsoft.WindowsTerminal -e --silent
-        } catch {
+        }
+        catch {
             Write-Host "[WARNING] Could not install automatically. Please download from the Microsoft Store:"
             Write-Host "       https://www.microsoft.com/store/productId/9N0DX20HK701"
         }
     }
-} else {
+}
+else {
     Write-Host "[OK] Windows Terminal is already installed."
 }
 Write-Host ""
@@ -192,7 +204,7 @@ if (Test-Command "winget") {
 
     Write-Host "[+] Running winget upgrade..."
     $upgradeArgs = @(
-        "upgrade","--all","--silent","--include-unknown",
+        "upgrade", "--all", "--silent", "--include-unknown",
         "--accept-source-agreements",
         "--accept-package-agreements",
         "--disable-interactivity"
