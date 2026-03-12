@@ -5,6 +5,9 @@ This PowerShell script is designed to automate **system package upgrades** using
 
 > **Note:** This script requires **Windows PowerShell 5.1 or higher** and that `winget` is installed on your system.
 
+##If you do not have Winget installed already, use this command to download it from a Powershell console:
+> Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+
 ---
 
 ## Features
